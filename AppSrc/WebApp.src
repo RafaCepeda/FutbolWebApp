@@ -74,6 +74,17 @@ Object oWebApp is a cWebApp
                                 Send NavigatePath
                         End_Procedure
                     End_Object
+
+                    Object oListadodeEntrenadoresItem1 is a cWebMenuItem
+                        Set psCaption to "Listado de Entrenadores"
+
+                        WebRegisterPath ntNavigateBegin oListadoEntrenadores
+
+                        Procedure OnClick
+                            Forward Send OnClick
+                                Send NavigatePath
+                        End_Procedure
+                    End_Object
                 End_Object
 
                 Object oSignOut_itm is a cWebMenuItem
@@ -158,6 +169,8 @@ Object oWebApp is a cWebApp
     Use JugadorView.wo
     Use ListadoJugadores.wo
     Use ZoomJugador.wo
+    Use ListadoEntrenadores.wo
+    Use ZoomEntrenador.wo
     Set phoDefaultView to oDashboard
 
 End_Object
