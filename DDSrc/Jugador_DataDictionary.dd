@@ -1,0 +1,40 @@
+﻿Use DataDict.pkg
+
+Open jugador
+Open jugadorposicion
+Open equipo
+
+Register_Object ojugadorWebLookup
+
+Class Jugador_DataDictionary is a DataDictionary
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        Set Main_File to jugador.File_Number
+
+        Set Add_Server_File to equipo.File_Number
+
+        Set Add_Client_File to jugadorposicion.File_Number
+
+        Set Foreign_Field_Option DD_KEYFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_KEYFIELD DD_FINDREQ to True
+        Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
+
+        Set Field_WebPrompt_Object Field jugador.ID to ojugadorWebLookup
+
+        Set Field_WebPrompt_Object Field jugador.Nombre to ojugadorWebLookup
+
+        Set Field_WebPrompt_Object Field jugador.Apellido to ojugadorWebLookup
+
+        Set Field_WebPrompt_Object Field jugador.EquipoID to ojugadorWebLookup
+
+    End_Procedure
+
+End_Class
+
+    #IFDEF Is$WebApp
+    Use jugadorWebLookup.wo
+    #ELSE
+    #ENDIF
+    

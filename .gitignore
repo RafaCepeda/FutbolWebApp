@@ -1,0 +1,34 @@
+# Archivos compilados
+*.exe
+*.dll
+*.obj
+*.pdb
+
+# Archivos temporales
+*.tmp
+*.log
+*.bak
+
+# Configuración local de conexiones
+DFConnId.ini
+
+# Archivos de configuración sensibles
+*.env
+.env.*
+
+# Configuración local del entorno
+.vs/
+# Archivos locales de DataFlex Studio
+IdeSrc/*.loc
+
+# Caché y archivos temporales de DataFlex
+*.cch
+*.k1
+*.k2
+*.k3
+
+# Datos locales generados
+*.dat
+*.hdr
+*.tag
+*.dbg
