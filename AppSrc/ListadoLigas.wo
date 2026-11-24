@@ -1,5 +1,7 @@
-﻿// C:\DataFlex Projects\FutbolWebApp\AppSrc\ListadoLigas.wo
+﻿
+//
 // Listado de Ligas
+// Sprint 2 - Navegacion
 //
 
 Use cWebView.pkg
@@ -21,11 +23,10 @@ Object oListadoLigas is a cWebView
     Set piMaxWidth to 1024
 
     Object oliga_DD is a Liga_DataDictionary
-    End_Object 
+    End_Object
 
-    Set Main_DD To oliga_DD
-    Set Server  To oliga_DD
-
+    Set Main_DD to oliga_DD
+    Set Server to oliga_DD
 
     Object oList is a cWebList
         Set piColumnSpan to 0
@@ -39,34 +40,34 @@ Object oListadoLigas is a cWebView
             Entry_Item liga.ID
             Set psCaption to "liga.ID"
             Set piWidth to 100
-        End_Object 
+        End_Object
 
         Object oligaNombre is a cWebColumn
             Entry_Item liga.Nombre
             Set psCaption to "liga.Nombre"
             Set piWidth to 1000
-        End_Object 
+        End_Object
 
         Object oligaPais is a cWebColumn
             Entry_Item liga.Pais
             Set psCaption to "liga.Pais"
             Set piWidth to 500
-        End_Object 
+        End_Object
 
         Object oligaEquipos is a cWebColumn
             Entry_Item liga.Equipos
             Set psCaption to "liga.Equipos"
             Set piWidth to 100
-        End_Object 
+        End_Object
 
         Object oligaEquiposMax is a cWebColumn
             Entry_Item liga.EquiposMax
             Set psCaption to "liga.EquiposMax"
             Set piWidth to 100
-        End_Object 
+        End_Object
 
         Object oDetailButton is a cWebColumnButton
-            Set psCaption to "btn"
+            Set psCaption to "Detalle"
             Set piWidth to 45
             Set pbFixedWidth to True
             Set pbResizable to False
@@ -76,6 +77,7 @@ Object oListadoLigas is a cWebView
 
             WebRegisterPath ntNavigateForward oZoomLiga
 
+            // Abre la ficha de la liga seleccionada.
             Procedure OnClick
                 Send NavigatePath
             End_Procedure
@@ -84,10 +86,12 @@ Object oListadoLigas is a cWebView
                 Move True to NavigateData.bReadOnly
             End_Procedure
 
-        End_Object 
+        End_Object
 
         WebRegisterPath ntNavigateForward oZoomLiga
 
+        // Determina la accion al pulsar una fila
+        // segun el origen de la navegacion.
         Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
             Get GetNavigateData to NavigateData
@@ -105,9 +109,8 @@ Object oListadoLigas is a cWebView
                     Send NavigateClose Self
                     Case Break
 
-                Case Else // must be nfUndefined
+                Case Else
                     Send NavigateForward of oZoomLiga Self
-
             Case End
         End_Procedure
 
@@ -115,23 +118,23 @@ Object oListadoLigas is a cWebView
             Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object 
+    End_Object
 
     Object oActionGroup is a cWebMenuGroup
 
         Object oSearch is a cWebMenuItem
             Set psCSSClass to "WebPromptMenuItem"
-            Set psCaption to "Search"
+            Set psCaption to "Buscar"
 
             Procedure OnClick
                 Send Search of oList
             End_Procedure
 
-        End_Object 
+        End_Object
 
         Object oNewButton is a cWebMenuItem
             Set psCSSClass to "WebClearMenuItem"
-            Set psCaption to "New"
+            Set psCaption to "Nuevo"
 
             WebRegisterPath ntNavigateForward oZoomLiga
 
@@ -143,37 +146,31 @@ Object oListadoLigas is a cWebView
                 Move True to NavigateData.bNewRecord
             End_Procedure
 
-        End_Object 
-    End_Object 
+        End_Object
 
+    End_Object
+
+    // Configura los botones segun el tipo de navegacion.
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         WebSet pbRender of oNewButton to True
         WebSet pbRender of oDetailButton to True
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down
-                // If Row select does main-zoom we don't need this
-                WebSet pbRender of oDetailButton to False
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent lookup from a Zoom
+                WebSet pbRender of oDetailButton to False
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main-file lookup from a Zoom
                 WebSet pbRender of oDetailButton to False
                 Case Break
 
-            Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or this may be used for some kind of custom query.
-                // If Row select does main-zoom we don't need this
-                WebSet pbRender of oDetailButton to False
-
+            Case Else
+                WebSet pbRender of oDetailButton to True
         Case End
 
     End_Procedure
 
-
-End_Object 
+End_Object
