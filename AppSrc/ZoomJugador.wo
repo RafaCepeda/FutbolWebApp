@@ -1,7 +1,7 @@
 ﻿
 //
 // Detalles del jugador
-// Sprint 2 - Navegacion From Child
+// Sprint 2 - Navegacion From Child y Undefined
 //
 
 Use cWebView.pkg
@@ -9,6 +9,7 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
+Use cWebButton.pkg
 
 Use Liga_DataDictionary.dd
 Use Equipo_DataDictionary.dd
@@ -83,8 +84,23 @@ Object oZoomJugador is a cWebView
 
             WebRegisterPath ntNavigateForward oListadoEquipos
 
-            // Permite seleccionar el equipo del jugador.
+            // Navegacion From Child hacia el selector de equipos.
             Procedure OnPrompt
+                Send NavigatePath
+            End_Procedure
+
+        End_Object
+
+        Object oVerPosicionesBtn is a cWebButton
+            Set psCaption to "Ver posiciones"
+            Set piColumnSpan to 4
+            Set piColumnIndex to 0
+
+            WebRegisterPath ntNavigateForwardCustom oListadoPosiciones
+
+            // Navegacion Undefined sin relacion directa
+            // entre los diccionarios de datos de ambas vistas.
+            Procedure OnClick
                 Send NavigatePath
             End_Procedure
 
@@ -139,6 +155,7 @@ Object oZoomJugador is a cWebView
 
     End_Object
 
+    // Configura los botones segun el estado de la vista.
     Procedure SetActionButtons
         tWebNavigateData NavigateData
         Boolean bHasRecord
@@ -152,6 +169,8 @@ Object oZoomJugador is a cWebView
         WebSet pbRender of oSaveBtn to False
         WebSet pbRender of oCancelChangesBtn to False
         WebSet pbRender of oDeleteBtn to False
+
+        WebSet pbRender of oVerPosicionesBtn to bHasRecord
 
         If (NavigateData.bReadOnly) Begin
             WebSet pbRender of oEditBtn to True
