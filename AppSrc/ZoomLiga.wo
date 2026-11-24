@@ -1,7 +1,7 @@
 ﻿
 //
 // Detalles de la liga
-// Sprint 2 - Navegacion From Parent
+// Sprint 2 - From Parent con listado integrado
 //
 
 Use cWebView.pkg
@@ -9,9 +9,11 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
-Use cWebButton.pkg
+Use cWebList.pkg
+Use cWebColumn.pkg
 
 Use Liga_DataDictionary.dd
+Use Equipo_DataDictionary.dd
 
 Object oZoomLiga is a cWebView
     Set piColumnCount to 12
@@ -23,6 +25,11 @@ Object oZoomLiga is a cWebView
     Set piMaxWidth to 1024
 
     Object oliga_DD is a Liga_DataDictionary
+    End_Object
+
+    Object oequipo_DD is a Equipo_DataDictionary
+        Set DDO_Server to oliga_DD
+        Set Constrain_File to liga.File_Number
     End_Object
 
     Set Main_DD to oliga_DD
@@ -72,17 +79,27 @@ Object oZoomLiga is a cWebView
             Set psLabel to "EquiposMax"
         End_Object
 
-        Object oVerEquiposBtn is a cWebButton
-            Set psCaption to "Ver equipos"
-            Set piColumnSpan to 4
+        // Muestra los equipos relacionados con la liga actual.
+        Object oListaEquipos is a cWebList
+            Set Server to oequipo_DD
+            Set piColumnSpan to 0
             Set piColumnIndex to 0
+            Set pbFillHeight to False
+            Set piHeight to 250
+            Set pbShowHeader to True
+            Set piSortColumn to 0
 
-            WebRegisterPath ntNavigateForward oListadoEquipos
+            Object oequipoID is a cWebColumn
+                Entry_Item equipo.ID
+                Set psCaption to "ID"
+                Set piWidth to 50
+            End_Object
 
-            // Abre el listado de equipos de la liga actual.
-            Procedure OnClick
-                Send NavigatePath
-            End_Procedure
+            Object oequipoNombre is a cWebColumn
+                Entry_Item equipo.Nombre
+                Set psCaption to "Equipos de la liga"
+                Set piWidth to 300
+            End_Object
 
         End_Object
 
@@ -150,8 +167,8 @@ Object oZoomLiga is a cWebView
         WebSet pbRender of oCancelChangesBtn to False
         WebSet pbRender of oDeleteBtn to False
 
-        // Solo permite consultar equipos de ligas existentes.
-        WebSet pbRender of oVerEquiposBtn to bHasRecord
+        // Oculta el listado si la liga no existe todavia.
+        WebSet pbRender of oListaEquipos to bHasRecord
 
         If (NavigateData.bReadOnly) Begin
             WebSet pbRender of oEditBtn to True
