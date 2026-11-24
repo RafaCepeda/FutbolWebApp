@@ -1,5 +1,7 @@
-﻿// C:\DataFlex Projects\FutbolWebApp\AppSrc\ListadoEntrenadores.wo
+﻿
+//
 // Listado de Entrenadores
+// Sprint 2 - Navegacion
 //
 
 Use cWebView.pkg
@@ -23,19 +25,18 @@ Object oListadoEntrenadores is a cWebView
     Set piMaxWidth to 1024
 
     Object oliga_DD is a Liga_DataDictionary
-    End_Object 
+    End_Object
 
     Object oequipo_DD is a Equipo_DataDictionary
-        Set DDO_Server To oliga_DD
-    End_Object 
+        Set DDO_Server to oliga_DD
+    End_Object
 
     Object oentrenador_DD is a Entrenador_DataDictionary
-        Set DDO_Server To oequipo_DD
-    End_Object 
+        Set DDO_Server to oequipo_DD
+    End_Object
 
-    Set Main_DD To oentrenador_DD
-    Set Server  To oentrenador_DD
-
+    Set Main_DD to oentrenador_DD
+    Set Server to oentrenador_DD
 
     Object oList is a cWebList
         Set piColumnSpan to 0
@@ -49,34 +50,34 @@ Object oListadoEntrenadores is a cWebView
             Entry_Item entrenador.ID
             Set psCaption to "entrenador.ID"
             Set piWidth to 100
-        End_Object 
+        End_Object
 
         Object oentrenadorNombre is a cWebColumn
             Entry_Item entrenador.Nombre
             Set psCaption to "entrenador.Nombre"
             Set piWidth to 600
-        End_Object 
+        End_Object
 
         Object oentrenadorApellido is a cWebColumn
             Entry_Item entrenador.Apellido
             Set psCaption to "entrenador.Apellido"
             Set piWidth to 600
-        End_Object 
+        End_Object
 
         Object oentrenadorNacionalidad is a cWebColumn
             Entry_Item entrenador.Nacionalidad
             Set psCaption to "entrenador.Nacionalidad"
             Set piWidth to 500
-        End_Object 
+        End_Object
 
         Object oequipoID is a cWebColumn
             Entry_Item equipo.ID
             Set psCaption to "entrenador.EquipoID"
             Set piWidth to 100
-        End_Object 
+        End_Object
 
         Object oDetailButton is a cWebColumnButton
-            Set psCaption to "btn"
+            Set psCaption to "Detalle"
             Set piWidth to 45
             Set pbFixedWidth to True
             Set pbResizable to False
@@ -86,6 +87,7 @@ Object oListadoEntrenadores is a cWebView
 
             WebRegisterPath ntNavigateForward oZoomEntrenador
 
+            // Abre la ficha del entrenador seleccionado.
             Procedure OnClick
                 Send NavigatePath
             End_Procedure
@@ -94,10 +96,12 @@ Object oListadoEntrenadores is a cWebView
                 Move True to NavigateData.bReadOnly
             End_Procedure
 
-        End_Object 
+        End_Object
 
         WebRegisterPath ntNavigateForward oZoomEntrenador
 
+        // Determina la accion al pulsar una fila
+        // segun el origen de la navegacion.
         Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
             Get GetNavigateData to NavigateData
@@ -115,9 +119,8 @@ Object oListadoEntrenadores is a cWebView
                     Send NavigateClose Self
                     Case Break
 
-                Case Else // must be nfUndefined
+                Case Else
                     Send NavigateForward of oZoomEntrenador Self
-
             Case End
         End_Procedure
 
@@ -125,23 +128,23 @@ Object oListadoEntrenadores is a cWebView
             Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object 
+    End_Object
 
     Object oActionGroup is a cWebMenuGroup
 
         Object oSearch is a cWebMenuItem
             Set psCSSClass to "WebPromptMenuItem"
-            Set psCaption to "Search"
+            Set psCaption to "Buscar"
 
             Procedure OnClick
                 Send Search of oList
             End_Procedure
 
-        End_Object 
+        End_Object
 
         Object oNewButton is a cWebMenuItem
             Set psCSSClass to "WebClearMenuItem"
-            Set psCaption to "New"
+            Set psCaption to "Nuevo"
 
             WebRegisterPath ntNavigateForward oZoomEntrenador
 
@@ -153,37 +156,31 @@ Object oListadoEntrenadores is a cWebView
                 Move True to NavigateData.bNewRecord
             End_Procedure
 
-        End_Object 
-    End_Object 
+        End_Object
 
+    End_Object
+
+    // Configura los botones segun el tipo de navegacion.
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         WebSet pbRender of oNewButton to True
         WebSet pbRender of oDetailButton to True
 
         Case Begin
             Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down
-                // If Row select does main-zoom we don't need this
-                WebSet pbRender of oDetailButton to False
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent lookup from a Zoom
+                WebSet pbRender of oDetailButton to False
                 Case Break
 
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main-file lookup from a Zoom
                 WebSet pbRender of oDetailButton to False
                 Case Break
 
-            Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or this may be used for some kind of custom query.
-                // If Row select does main-zoom we don't need this
-                WebSet pbRender of oDetailButton to False
-
+            Case Else
+                WebSet pbRender of oDetailButton to True
         Case End
 
     End_Procedure
 
-
-End_Object 
+End_Object
